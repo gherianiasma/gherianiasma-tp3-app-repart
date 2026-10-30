@@ -1,9 +1,8 @@
 package server;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.Socket;
+
+import java.io.*;
+import java.net.*;
 
 public class ClientProcess extends Thread {
 
@@ -16,34 +15,70 @@ public class ClientProcess extends Thread {
     }
 
     public void run() {
-        System.out.println("Le client n°" + numeroClient
-                + " est connecté !");
 
         try {
-            OutputStream os = socket.getOutputStream();
-            PrintWriter pw = new PrintWriter(os, true);
+            ObjectOutputStream out = new ObjectOutputStream(
+                    socket.getOutputStream());
+            out.flush();
 
-            pw.println("Vous êtes le client n°" + numeroClient);
+            ObjectInputStream in = new ObjectInputStream(
+                    socket.getInputStream());
 
+            Operation op = (Operation) in.readObject();
+
+            double a = op.getA();
+            String operateur = op.getOperateur();
+            double b = op.getB();
+
+            double resultat = 0;
+            String reponse;
+
+            switch (operateur) {
+
+                case "+":
+                    resultat = a + b;
+                    reponse = "Resultat : " + resultat;
+                    break;
+
+                case "-":
+                    resultat = a - b;
+                    reponse = "Resultat : " + resultat;
+                    break;
+
+                case "*":
+                    resultat = a * b;
+                    reponse = "Resultat : " + resultat;
+                    break;
+
+                case "/":
+                    if (b == 0) {
+                        reponse = "Erreur : division par zero";
+                    } else {
+                        resultat = a / b;
+                        reponse = "Resultat : " + resultat;
+                    }
+                    break;
+
+                default:
+                    reponse = "Erreur : operateur invalide";
+            }
+
+            if (!reponse.startsWith("Erreur")) {
+                ServeurMT.incrementerCompteur();
+            }
+
+            out.writeObject(reponse);
+            out.flush();
+
+            System.out.println("Client n°" + numeroClient
+                    + " : " + reponse);
+
+            in.close();
+            out.close();
             socket.close();
 
-        } catch (IOException e) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Erreur : " + e.getMessage());
         }
     }
 }

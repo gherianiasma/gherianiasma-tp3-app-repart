@@ -1,37 +1,37 @@
 package server;
+import java.io.*;
+import java.net.*;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+public class ServeurMT {
 
-public class ServeurMT extends Thread {
+    public static int compteur = 0;
 
-    public void run() {
+    public static synchronized void incrementerCompteur() {
+        compteur++;
+        System.out.println("Nombre total d'operations : " + compteur);
+    }
+
+    public static void main(String[] args) {
+
         try {
-            ServerSocket ss = new ServerSocket(1234);
-            System.out.println("Le serveur attend...");
+            ServerSocket serveur = new ServerSocket(1234);
+
+            System.out.println("Serveur en attente...");
 
             int numeroClient = 0;
 
             while (true) {
-                Socket socket = ss.accept();
+
+                Socket socket = serveur.accept();
 
                 numeroClient++;
 
-                System.out.println("Client n°" + numeroClient
-                        + " connecté");
-                System.out.println("Adresse IP : "
-                        + socket.getRemoteSocketAddress());
+                System.out.println("Client n°" + numeroClient + " connecté.");
 
                 new ClientProcess(socket, numeroClient).start();
             }
-
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Erreur : " + e.getMessage());
         }
-    }
-
-    public static void main(String[] args) {
-        new ServeurMT().start();
     }
 }

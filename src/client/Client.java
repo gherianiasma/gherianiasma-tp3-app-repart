@@ -1,25 +1,38 @@
 package client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.net.Socket;
+import server.Operation;
+
+import java.io.*;
+import java.net.*;
 
 public class Client {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-        Socket socket = new Socket("localhost", 1234);
+        try {
+            Socket socket = new Socket("localhost", 1234);
 
-        InputStream is = socket.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
+            ObjectOutputStream out = new ObjectOutputStream(
+                    socket.getOutputStream());
+            out.flush();
 
-        String message = br.readLine();
+            ObjectInputStream in = new ObjectInputStream(
+                    socket.getInputStream());
 
-        System.out.println(message);
+            Operation op = new Operation(55, "*", 25);
 
-        socket.close();
+            out.writeObject(op);
+
+            String reponse = (String) in.readObject();
+
+            System.out.println(reponse);
+
+            in.close();
+            out.close();
+            socket.close();
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
     }
 }
