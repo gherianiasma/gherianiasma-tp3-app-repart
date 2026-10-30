@@ -17,16 +17,16 @@ Créer un serveur Java capable de gérer plusieurs clients en même temps grâce
 3. Le serveur affiche les informations de chaque client.
 4. Chaque client reçoit son numéro de connexion.
 ## 4. ServeurMT:
-![serveurmt.png](../cap/serveurmt.png)
+![serveurmt.png](cap/serveurmt.png)
 
 ## 5. ClientProcess.java:
-![clientprocess.png](../cap/clientprocess.png)
+![clientprocess.png](cap/clientprocess.png)
 
 ## 6. Client:
-![client.png](../cap/client.png)
+![client.png](cap/client.png)
 
 
 ## 7.resultats:
-![exp1.png](../cap/exp1.png)
+![exp1.png](cap/exp1.png)
 
-![exp2.png](../cap/exp2.png)
+![exp2.png](cap/exp2.png)
